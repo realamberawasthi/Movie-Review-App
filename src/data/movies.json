@@ -5,7 +5,8 @@
     "year": 2010,
     "genre": "Sci-Fi",
     "rating": 5,
-    "poster": "https://image.tmdb.org/t/p/w500/811UzqNOACInIfKUteCPYyWasTM.jpg",
+    "poster": "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg",
     "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
     "cast": "Leonardo DiCaprio, Joseph Gordon-Levitt, Elliot Page"
   },
@@ -16,6 +17,7 @@
     "genre": "Action",
     "rating": 5,
     "poster": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/nMKdUUepR0i5zn0y1T4CsSB5ez.jpg",
     "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
     "cast": "Christian Bale, Heath Ledger, Aaron Eckhart"
   },
@@ -25,7 +27,8 @@
     "year": 2014,
     "genre": "Sci-Fi",
     "rating": 5,
-    "poster": "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MvrIdlsR.jpg",
+    "poster": "https://image.tmdb.org/t/p/w500/pbrkL804c8yAv3zBZR4QPEafpAR.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/xJHokMbljvjADYdit5fK1DVfjko.jpg",
     "description": "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
     "cast": "Matthew McConaughey, Anne Hathaway, Jessica Chastain"
   },
@@ -35,7 +38,8 @@
     "year": 1999,
     "genre": "Action",
     "rating": 4,
-    "poster": "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+    "poster": "https://image.tmdb.org/t/p/w500/dXNAPwY7VrqMAo51EKhhCJfaGb5.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/fNG7i7RqMErkcqhohV2a6cV1Ehy.jpg",
     "description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
     "cast": "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss"
   },
@@ -46,6 +50,7 @@
     "genre": "Thriller",
     "rating": 5,
     "poster": "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg",
     "description": "Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.",
     "cast": "Song Kang-ho, Lee Sun-kyun, Cho Yeo-jeong"
   },
@@ -56,6 +61,7 @@
     "genre": "Action",
     "rating": 4,
     "poster": "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg",
     "description": "After the devastating events of Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.",
     "cast": "Robert Downey Jr., Chris Evans, Mark Ruffalo"
   },
@@ -66,6 +72,7 @@
     "genre": "Drama",
     "rating": 4,
     "poster": "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/gZWl93sf8AxavYpVT1Un6EF3oCj.jpg",
     "description": "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime.",
     "cast": "Joaquin Phoenix, Robert De Niro, Zazie Beetz"
   },
@@ -75,7 +82,8 @@
     "year": 2001,
     "genre": "Animation",
     "rating": 5,
-    "poster": "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkBg8lWOb.jpg",
+    "poster": "https://image.tmdb.org/t/p/w500/Ab8mkHmkYADjU7wQiOkia9BzGvS.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/mSDsSDwaP3E7dEfUPWy4J0djt4O.jpg",
     "description": "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches, and spirits, and where humans are changed into beasts.",
     "cast": "Rumi Hiiragi, Miyu Irino, Mari Natsuki"
   },
@@ -86,6 +94,7 @@
     "genre": "Drama",
     "rating": 5,
     "poster": "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/tmU7GeKVybMWFButWEGl2M4GeiP.jpg",
     "description": "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
     "cast": "Marlon Brando, Al Pacino, James Caan"
   },
@@ -96,6 +105,7 @@
     "genre": "Crime",
     "rating": 5,
     "poster": "https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/suaEOtk1N1sgg2MTM7oZd2cfVp3.jpg",
     "description": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
     "cast": "John Travolta, Uma Thurman, Samuel L. Jackson"
   },
@@ -106,6 +116,7 @@
     "genre": "Action",
     "rating": 4,
     "poster": "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/Ar7QuMnmxVA4Mn7cLj4pAj556JH.jpg",
     "description": "A former Roman General sets out to exact vengeance against the corrupt emperor who murdered his family and sent him into slavery.",
     "cast": "Russell Crowe, Joaquin Phoenix, Connie Nielsen"
   },
@@ -115,7 +126,8 @@
     "year": 1994,
     "genre": "Animation",
     "rating": 5,
-    "poster": "https://image.tmdb.org/t/p/w500/sKCr78AS8qwYrqjS0H911RkARCA.jpg",
+    "poster": "https://image.tmdb.org/t/p/w500/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/w1280/wXsQvli6tWqja51pYxXNG1LFIGV.jpg",
     "description": "Lion prince Simba and his father are targeted by his bitter uncle, who wants to ascend the throne himself.",
     "cast": "Matthew Broderick, Jeremy Irons, James Earl Jones"
   }

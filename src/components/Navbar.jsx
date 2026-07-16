@@ -1,26 +1,84 @@
-import { Film, Menu } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Film, Search, Menu, X } from 'lucide-react';
 
 const Navbar = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // After navigating to Home, scroll to the target section
+  const scrollTo = (sectionId) => {
+    setMenuOpen(false);
+
+    if (location.pathname !== '/') {
+      // Navigate to home with the section hash
+      navigate('/?scrollTo=' + sectionId);
+    } else {
+      // Already on home, just scroll
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
-    <nav className="sticky top-0 z-50 w-full glass-panel border-b border-white/10 px-6 py-4">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-2 text-white">
-          <Film className="w-8 h-8 text-indigo-400" />
-          <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            Movie Review App
-          </span>
+    <nav className={`cr-navbar ${scrolled ? 'solid' : 'transparent'}`}>
+      {/* Logo */}
+      <Link to="/" className="cr-logo">
+        <div className="cr-logo-icon">
+          <Film style={{ color: '#000', width: 22, height: 22 }} />
         </div>
-        <div className="md:hidden">
-          <button className="text-slate-300 hover:text-white transition-colors">
-            <Menu className="w-6 h-6" />
+        <span className="cr-logo-text">CineRate</span>
+      </Link>
+
+      {/* Desktop links */}
+      <div className="hidden md:flex items-center gap-8">
+        <button className="cr-nav-btn" onClick={() => scrollTo('featured')}>Home</button>
+        <button className="cr-nav-btn" onClick={() => scrollTo('all-movies')}>Movies</button>
+        <button className="cr-nav-btn" onClick={() => scrollTo('top-rated')}>Top Rated</button>
+        <button className="cr-search-btn" onClick={() => scrollTo('search-section')}>
+          <Search style={{ width: 14, height: 14 }} />
+          Search
+        </button>
+      </div>
+
+      {/* Mobile toggle */}
+      <button
+        className="md:hidden text-white"
+        onClick={() => setMenuOpen(o => !o)}
+        style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+      >
+        {menuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div style={{
+          position: 'absolute', top: '72px', left: 0, right: 0,
+          background: 'rgba(10,10,10,0.98)', backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(245,197,24,0.15)',
+          padding: '1.5rem',
+          display: 'flex', flexDirection: 'column', gap: '1rem',
+          zIndex: 200,
+        }}>
+          <button className="cr-nav-btn text-left" onClick={() => scrollTo('featured')}>Home</button>
+          <button className="cr-nav-btn text-left" onClick={() => scrollTo('all-movies')}>Movies</button>
+          <button className="cr-nav-btn text-left" onClick={() => scrollTo('top-rated')}>Top Rated</button>
+          <button className="cr-search-btn" style={{ width: 'fit-content' }} onClick={() => scrollTo('search-section')}>
+            <Search style={{ width: 14, height: 14 }} />
+            Search
           </button>
         </div>
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
-          <a href="#" className="hover:text-indigo-400 transition-colors">Home</a>
-          <a href="#" className="hover:text-indigo-400 transition-colors">Movies</a>
-          <a href="#" className="hover:text-indigo-400 transition-colors">Top Rated</a>
-        </div>
-      </div>
+      )}
     </nav>
   );
 };

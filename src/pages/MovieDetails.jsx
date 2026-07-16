@@ -1,134 +1,301 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, Film, Star } from 'lucide-react';
+import { ArrowLeft, Calendar, Film, Star, Clock, Users } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import RatingStars from '../components/RatingStars';
 import moviesData from '../data/movies.json';
+import { hasApiKey, getMovieById } from '../services/tmdbApi';
 
 const MovieDetails = () => {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Find movie by id
-    const foundMovie = moviesData.find(m => m.id === parseInt(id));
-    if (foundMovie) {
-      setMovie(foundMovie);
-      // Retrieve stored rating if exists
-      const storedRating = localStorage.getItem(`rating_${foundMovie.id}`);
-      if (storedRating) {
-        setUserRating(parseInt(storedRating));
+    const fetchMovie = async () => {
+      setLoading(true);
+      // Try API
+      if (hasApiKey()) {
+        const apiMovie = await getMovieById(id);
+        if (apiMovie) {
+          setMovie(apiMovie);
+          const stored = localStorage.getItem(`rating_${id}`);
+          if (stored) setUserRating(parseInt(stored));
+          setLoading(false);
+          return;
+        }
       }
-    }
+      // Fallback to local
+      const localMovie = moviesData.find(m => m.id === parseInt(id));
+      if (localMovie) {
+        setMovie(localMovie);
+        const stored = localStorage.getItem(`rating_${localMovie.id}`);
+        if (stored) setUserRating(parseInt(stored));
+      }
+      setLoading(false);
+    };
+    fetchMovie();
   }, [id]);
 
-  const handleRatingChange = (newRating) => {
-    setUserRating(newRating);
-    localStorage.setItem(`rating_${movie.id}`, newRating);
+  const handleRating = (star) => {
+    setUserRating(star);
+    localStorage.setItem(`rating_${movie.id}`, star);
   };
 
-  if (!movie) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
-        <h2 className="text-3xl font-bold text-white mb-4">Movie Not Found</h2>
-        <Link to="/" className="text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
-          <ArrowLeft className="w-4 h-4" /> Back to Home
-        </Link>
+      <div style={{ minHeight: '100vh', background: '#0A0A0A' }}>
+        <Navbar />
+        <div className="cr-loader" style={{ minHeight: '100vh' }}>
+          <div className="cr-spinner" />
+          <p style={{ color: '#888' }}>Loading movie...</p>
+        </div>
       </div>
     );
   }
 
-  // Use a heavily blurred version of the poster for the background for a cinematic feel
+  if (!movie) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#0A0A0A' }}>
+        <Navbar />
+        <div className="cr-empty" style={{ minHeight: '100vh' }}>
+          <div className="cr-empty-icon">
+            <Film style={{ width: 32, height: 32, color: '#555' }} />
+          </div>
+          <h2 style={{ color: 'white', fontSize: '1.8rem', fontWeight: 700, fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.04em' }}>
+            Movie Not Found
+          </h2>
+          <Link to="/" className="btn-back">
+            <ArrowLeft style={{ width: 16, height: 16 }} />
+            Back to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const castList = movie.cast ? movie.cast.split(',').map(c => c.trim()) : [];
+
   return (
-    <div className="min-h-screen bg-slate-900 relative selection:bg-indigo-500/30">
+    <div style={{ minHeight: '100vh', background: '#0A0A0A' }}>
       <Navbar />
-      
-      {/* Cinematic Blur Background */}
-      <div className="fixed inset-0 z-0">
-        <img src={movie.poster} alt="" className="w-full h-full object-cover opacity-20" />
-        <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-3xl"></div>
+
+      {/* ── Cinematic Background ── */}
+      <div className="cr-details-bg">
+        <img src={movie.backdrop || movie.poster} alt="" />
+        <div className="cr-details-bg-overlay" />
       </div>
 
-      <main className="relative z-10 max-w-6xl mx-auto px-4 py-12 md:py-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      {/* ── Content ── */}
+      <main style={{ position: 'relative', zIndex: 10, maxWidth: 1200, margin: '0 auto', padding: '6rem 2.5rem 4rem' }}>
         
-        <Link to="/" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors py-2 px-4 rounded-full bg-white/5 hover:bg-white/10 mb-8 backdrop-blur-md">
-          <ArrowLeft className="w-4 h-4" /> 
-          <span className="font-medium text-sm">Back to all movies</span>
+        {/* Back button */}
+        <Link to="/" className="btn-back" style={{ marginBottom: '2.5rem', display: 'inline-flex' }}>
+          <ArrowLeft style={{ width: 16, height: 16 }} />
+          Back to all movies
         </Link>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
-          {/* Poster Column */}
-          <div className="md:col-span-4 lg:col-span-3">
-            <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border border-white/10 group relative">
-              <img 
-                src={movie.poster} 
-                alt={`${movie.title} poster`}
-                className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent"></div>
-            </div>
-          </div>
-
-          {/* Details Column */}
-          <div className="md:col-span-8 lg:col-span-9 glass-panel rounded-3xl p-8 lg:p-10 flex flex-col justify-start">
-            
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-sm font-semibold tracking-wide shadow-inner">
-                {movie.genre}
-              </span>
-              <div className="flex items-center gap-1.5 text-slate-300 text-sm font-medium bg-slate-800/50 px-3 py-1 rounded-full border border-white/5">
-                <Calendar className="w-4 h-4 text-emerald-400" />
-                {movie.year}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem' }}>
+          {/* Desktop layout */}
+          <div className="cr-details-layout">
+            {/* Poster */}
+            <div className="cr-details-poster-wrap">
+              <div style={{
+                borderRadius: 16,
+                overflow: 'hidden',
+                border: '1px solid rgba(245,197,24,0.15)',
+                boxShadow: '0 20px 80px rgba(0,0,0,0.7), 0 0 30px rgba(245,197,24,0.06)',
+                position: 'relative',
+              }}>
+                <img
+                  src={movie.poster}
+                  alt={`${movie.title} poster`}
+                  style={{ width: '100%', display: 'block' }}
+                  onError={(e) => {
+                    e.target.src = 'https://placehold.co/300x450/111/F5C518?text=No+Poster';
+                  }}
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0, left: 0, right: 0,
+                  height: '40%',
+                  background: 'linear-gradient(to top, rgba(17,17,17,0.9), transparent)',
+                }} />
               </div>
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight leading-tight">
-              {movie.title}
-            </h1>
-
-            <div className="flex items-center gap-4 mb-8 pb-8 border-b border-white/10">
-              <div className="flex flex-col">
-                <span className="text-slate-400 text-sm mb-1 font-medium">Average Rating</span>
-                <div className="flex items-center gap-2">
-                  <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
-                  <span className="text-2xl font-bold text-white tracking-tight">{movie.rating.toFixed(1)}</span>
-                  <span className="text-slate-400 font-medium">/ 5</span>
-                </div>
+            {/* Details */}
+            <div className="cr-details-info">
+              {/* Badge row */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                <span className="cr-hero-genre-pill">{movie.genre}</span>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+                  color: '#999', fontSize: '0.85rem', fontWeight: 500,
+                }}>
+                  <Calendar style={{ width: 14, height: 14, color: '#F5C518' }} />
+                  {movie.year}
+                </span>
+                {movie.runtime && (
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+                    color: '#999', fontSize: '0.85rem', fontWeight: 500,
+                  }}>
+                    <Clock style={{ width: 14, height: 14, color: '#F5C518' }} />
+                    {movie.runtime} min
+                  </span>
+                )}
               </div>
-            </div>
 
-            <h3 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
-              <Film className="w-5 h-5 text-indigo-400" />
-              Synopsis
-            </h3>
-            <p className="text-slate-300 text-lg leading-relaxed mb-8 max-w-3xl">
-              {movie.description}
-            </p>
+              {/* Title */}
+              <h1 style={{
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
+                lineHeight: 0.95,
+                letterSpacing: '0.02em',
+                color: 'white',
+                marginBottom: '0.75rem',
+                textShadow: '0 4px 30px rgba(0,0,0,0.8)',
+              }}>
+                {movie.title}
+              </h1>
 
-            <div className="mb-10">
-              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Top Cast</h3>
-              <p className="text-white text-lg font-medium">{movie.cast}</p>
-            </div>
+              {/* Tagline */}
+              {movie.tagline && (
+                <p style={{
+                  color: '#F5C518', fontStyle: 'italic', fontSize: '1.1rem',
+                  fontWeight: 500, marginBottom: '1.5rem', opacity: 0.85,
+                }}>
+                  "{movie.tagline}"
+                </p>
+              )}
 
-            {/* User Rating Section */}
-            <div className="mt-auto bg-slate-800/40 rounded-2xl p-6 border border-white/5 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              {/* Rating display */}
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '1.5rem',
+                padding: '1.25rem', borderRadius: 12,
+                background: 'rgba(245,197,24,0.04)',
+                border: '1px solid rgba(245,197,24,0.1)',
+                marginBottom: '2rem',
+              }}>
                 <div>
-                  <h4 className="text-white font-bold text-lg mb-1">Rate this movie</h4>
-                  <p className="text-sm text-slate-400">Share your thoughts with the community</p>
+                  <div style={{ color: '#888', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>
+                    Rating
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Star style={{ width: 22, height: 22, fill: '#F5C518', color: '#F5C518' }} />
+                    <span style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white' }}>
+                      {movie.rating?.toFixed?.(1) ?? movie.rating}
+                    </span>
+                    <span style={{ color: '#666', fontWeight: 500 }}>/5</span>
+                  </div>
                 </div>
-                <div className="bg-slate-900/50 px-4 py-3 rounded-xl border border-white/5 shadow-inner">
-                  <RatingStars rating={userRating} onChange={handleRatingChange} size="lg" />
+                {userRating > 0 && (
+                  <div style={{ borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '1.5rem' }}>
+                    <div style={{ color: '#888', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>
+                      Your Rating
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Star style={{ width: 18, height: 18, fill: '#F5C518', color: '#F5C518' }} />
+                      <span style={{ fontSize: '1.3rem', fontWeight: 700, color: '#F5C518' }}>{userRating}</span>
+                      <span style={{ color: '#666', fontWeight: 500 }}>/5</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Synopsis */}
+              <div style={{ marginBottom: '2rem' }}>
+                <h3 style={{
+                  fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.2rem',
+                  letterSpacing: '0.08em', color: '#F5C518', marginBottom: '0.75rem',
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                }}>
+                  <Film style={{ width: 18, height: 18 }} />
+                  Synopsis
+                </h3>
+                <p style={{
+                  color: '#C8C8C8', fontSize: '1rem', lineHeight: 1.8,
+                  maxWidth: 700,
+                }}>
+                  {movie.description}
+                </p>
+              </div>
+
+              {/* Cast */}
+              {castList.length > 0 && (
+                <div style={{ marginBottom: '2.5rem' }}>
+                  <h3 style={{
+                    fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.2rem',
+                    letterSpacing: '0.08em', color: '#F5C518', marginBottom: '0.75rem',
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                  }}>
+                    <Users style={{ width: 18, height: 18 }} />
+                    Top Cast
+                  </h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {castList.map((actor) => (
+                      <span key={actor} className="cr-cast-badge">{actor}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Rate this movie */}
+              <div className="cr-glass" style={{ padding: '1.5rem 2rem', position: 'relative', overflow: 'hidden' }}>
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'linear-gradient(135deg, rgba(245,197,24,0.04), transparent)',
+                  pointerEvents: 'none',
+                }} />
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                  <div>
+                    <h4 style={{ color: 'white', fontWeight: 700, fontSize: '1.05rem', marginBottom: 4 }}>
+                      Rate this movie
+                    </h4>
+                    <p style={{ color: '#666', fontSize: '0.85rem' }}>
+                      Share your thoughts with the community
+                    </p>
+                  </div>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 2,
+                    background: 'rgba(0,0,0,0.3)', padding: '0.6rem 0.8rem',
+                    borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)',
+                  }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        className="cr-star-btn"
+                        onClick={() => handleRating(star)}
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                      >
+                        <Star
+                          style={{
+                            width: 28, height: 28,
+                            fill: star <= (hoverRating || userRating) ? '#F5C518' : 'transparent',
+                            color: star <= (hoverRating || userRating) ? '#F5C518' : '#444',
+                            transition: 'all 0.2s ease',
+                            filter: star <= (hoverRating || userRating) ? 'drop-shadow(0 0 6px rgba(245,197,24,0.5))' : 'none',
+                          }}
+                        />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="cr-footer">
+        <span className="cr-footer-brand">CineRate</span>
+        <span>© {new Date().getFullYear()} All rights reserved.</span>
+      </footer>
     </div>
   );
 };
